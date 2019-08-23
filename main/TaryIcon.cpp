@@ -1,8 +1,8 @@
-#include "SpriteWindowTray.h"
+#include "TrayIcon.h"
 
-SpriteWindowTray::SpriteWindowTray(HWND wnd)
+TrayIcon::TrayIcon(HWND wnd)
 {
-	HICON ntfIcon = (HICON)LoadImage(NULL, "Content\\meiIcon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+	HICON ntfIcon = (HICON)LoadImage(NULL, L"icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
 	trayIcon = { 0 };
 	trayIcon.hWnd = wnd;
 	trayIcon.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP;
@@ -10,10 +10,10 @@ SpriteWindowTray::SpriteWindowTray(HWND wnd)
 	trayIcon.uCallbackMessage = AMAOMSG_NOTIFYICON;
 	trayIcon.uID = AMAO_TRAYICON_ID;
 	trayIcon.hIcon = ntfIcon;
-	lstrcpy(trayIcon.szTip, "=£þ¦Ø£þ=");
+	lstrcpy(trayIcon.szTip, L"=£þ¦Ø£þ=");
 }
 
-void SpriteWindowTray::AddNotifyIcon()
+void TrayIcon::AddNotifyIcon()
 {
 	Shell_NotifyIcon(NIM_ADD, &trayIcon);
 }

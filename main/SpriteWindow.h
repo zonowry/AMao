@@ -1,7 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include "resources.h"
-#include "SpriteWindowTray.h"
+#include "TrayIcon.h"
 
 using namespace std;
 

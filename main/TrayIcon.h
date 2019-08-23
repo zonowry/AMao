@@ -2,12 +2,12 @@
 #include <Windows.h>
 #include "resources.h"
 
-class SpriteWindowTray
+class TrayIcon
 {
 private:
-	NOTIFYICONDATA trayIcon;
 public:
-	SpriteWindowTray(HWND wnd);
+	NOTIFYICONDATA trayIcon;
+	TrayIcon(HWND wnd);
 
 	void AddNotifyIcon();
 };

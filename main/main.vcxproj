@@ -29,7 +29,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -128,12 +128,15 @@
     <ClCompile Include="SpriteAnimation.cpp" />
     <ClCompile Include="SpriteBuilder.cpp" />
     <ClCompile Include="SpriteInstance.cpp" />
+    <ClCompile Include="TaryIcon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FrameHandler.h" />
+    <ClInclude Include="resources.h" />
     <ClInclude Include="SpriteAnimation.h" />
     <ClInclude Include="SpriteBuilder.h" />
     <ClInclude Include="SpriteInstance.h" />
+    <ClInclude Include="TrayIcon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

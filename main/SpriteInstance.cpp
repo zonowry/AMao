@@ -2,6 +2,50 @@
 
 
 
+// 托盘弹出菜单
+HMENU ntiMenu;
+SpriteFrame* frame = new SpriteFrame(L"frame/test.png");
+
+void PopupNotifyMenu(HWND hwnd) {
+	POINT pt;
+	GetCursorPos(&pt);
+	// 激活窗口，以便响应事件，关闭弹出菜单
+	SetForegroundWindow(hwnd);
+	TrackPopupMenu(ntiMenu, TPM_RIGHTBUTTON, pt.x, pt.y, NULL, hwnd, NULL);
+}
+
+void SpriteInstance::DragStart(POINT clickPoint)
+{
+	lMouseButton = true;
+	// 优化针对鼠标事件捕获（独占） ,需要与ReleaseCapture()成对出现
+	SetCapture(this->mainWindow);
+	triggerPoint = clickPoint;
+}
+
+
+
+void SpriteInstance::DragIng()
+{
+	if (lMouseButton)
+	{
+
+		POINT cursor;
+		GetCursorPos(&cursor);
+		cursor.x -= this->triggerPoint.x;
+		cursor.y -= this->triggerPoint.y;
+
+
+		SetWindowPos(this->mainWindow, NULL, cursor.x, cursor.y, NULL, NULL, SWP_NOREDRAW | SWP_NOSIZE | SWP_NOZORDER);
+	}
+}
+
+void SpriteInstance::DragStop()
+{
+	//currentState = c
+	lMouseButton = false;
+	ReleaseCapture();
+}
+
 
 
 LRESULT SpriteInstance::MainWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -10,14 +54,51 @@ LRESULT SpriteInstance::MainWindowProc(HWND hwnd, UINT message, WPARAM wParam, L
 	switch (message)
 	{
 	case WM_CREATE:
+		ntiMenu = CreatePopupMenu();
 		// 托盘弹出菜单
-		/*AppendMenu(ntiMenu, MF_STRING, NTI_ABM, "作者博客");
-		AppendMenu(ntiMenu, MF_STRING, NTI_QUIT, "退出");*/
+		AppendMenu(ntiMenu, MF_STRING, NTI_ABM, L"py交易");
+		AppendMenu(ntiMenu, MF_STRING, NTI_QUIT, L"退出");
 		return 0;
-		/*case AMAOMSG_NOTIFYICON:
-			return TrayIconHandle(lParam, hwnd);
-		case WM_COMMAND:
-			return MenuHandle(wParam);*/
+
+	case WM_RBUTTONDOWN:
+		PopupNotifyMenu(hwnd);
+		break;
+		/// 窗口拖拽处理 >>>
+	case WM_LBUTTONDOWN:
+		SpriteInstance::GetInstance()->DragStart({ LOWORD(lParam), HIWORD(lParam) });
+		break;
+	case WM_MOUSEMOVE:
+		// 拖拽
+		SpriteInstance::GetInstance()->DragIng();
+		break;
+	case WM_LBUTTONUP:
+		SpriteInstance::GetInstance()->DragStop();
+		break;
+		/// 窗口拖拽处理 <<<
+
+	case AMAOMSG_NOTIFYICON:
+		switch (lParam) {
+		case  WM_RBUTTONDOWN:
+			PopupNotifyMenu(hwnd);
+			break;
+		}
+		break;
+	case WM_COMMAND:
+		switch (wParam)
+		{
+			/// 托盘图标菜单 >>>
+		case NTI_QUIT:
+			PostQuitMessage(0);
+			return 0;
+		case NTI_ABM:
+			ShellExecute(NULL, TEXT("open"), TEXT("https://kaakira.com"), NULL, NULL, SW_SHOWNORMAL);
+			break;
+			/// 托盘图标菜单 <<<
+		}
+		break;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
 	default:
 		return DefWindowProc(hwnd, message, wParam, lParam);
 	}
@@ -45,7 +126,7 @@ void SpriteInstance::GenerateWindowHand()
 		// 窗体类名
 		MAIN_WINDOW_CLASSNAME,
 		// 窗口标题
-		"",
+		L"",
 		// 窗口样式
 		WS_POPUP | WS_VISIBLE,
 		// 窗口初始屏幕X坐标
@@ -66,7 +147,6 @@ void SpriteInstance::GenerateWindowHand()
 		this
 	);
 
-
 }
 
 void SpriteInstance::Ready(SpriteConfiguration config)
@@ -74,6 +154,9 @@ void SpriteInstance::Ready(SpriteConfiguration config)
 	this->configuration = config;
 	this->GenerateWindowHand();
 	this->frameHand = new FrameHandler();
+	this->frameHand->SetWindowHand(this->mainWindow, this->configuration.size);
+	this->trayIcon = new TrayIcon(mainWindow);
+	this->trayIcon->AddNotifyIcon();
 }
 
 void SpriteInstance::Start()
@@ -88,19 +171,24 @@ void SpriteInstance::Start()
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
+		// TODO: 通过行为树获取frame帧
+		//SpriteFrame* frame = xxx;
+
 		// 更新帧（重绘）
-		frameHand->NextFrame();
-		Sleep(30);
+		frameHand->NextFrame(frame);
+
+		// 动态调节性能
+		if (!lMouseButton) {
+			Sleep(MAIN_PROGRESS_DELAY);
+		}
 	}
-	// ����ͼ����ʧ
-	// Shell_NotifyIcon(NIM_DELETE, mainWindow.trayIcon);
+	// 关闭托盘图标
+	Shell_NotifyIcon(NIM_DELETE, &(trayIcon->trayIcon));
 
 }
 
 void SpriteInstance::Show()
 {
-	ShowWindow(this->mainWindow, 0);
+	ShowWindow(this->mainWindow, 10);
 
-	//SpriteWindowTray trayIcon(wnd);
-	//trayIcon.AddNotifyIcon();
 }

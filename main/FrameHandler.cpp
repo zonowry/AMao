@@ -1,5 +1,4 @@
-#include "FrameHandler.h"
-
+﻿#include "FrameHandler.h"
 struct ComException
 {
 	HRESULT result;
@@ -30,49 +29,98 @@ struct ComException
 		}
 	}
 };
+
 void HR(HRESULT const result)
 {
 	if (S_OK != result)
 		throw ComException(result);
 }
 
-FrameHandler::FrameHandler() :window(NULL), clientRect({ 0 }), size({ 0 })
+
+SpriteFrame::SpriteFrame(LPCWSTR imagePath) :imageFilePath(imagePath), id(SpriteFrame::CeateFrameId())
 {
 }
 
-
-
+FrameHandler::FrameHandler() : window(NULL), rect({ 0 }), size({ 0 })
+{
+}
 
 void FrameHandler::SetWindowHand(HWND window, SIZE size)
 {
 	this->window = window;
 	this->size = size;
-	this->clientRect = { 0,0,size.cx,size.cy };
-	/// ��ʼ��hdc  ��������dc >>>
+	this->rect = { 0,0,size.cx,size.cy };
+	this->d2d1Rect = { 0,0, (float)size.cx, (float)size.cy };
+	/// 初始化hdc  创建兼容dc >>>
 	this->hdcDst = GetDC(this->window);
 	this->hdcSrc = CreateCompatibleDC(this->hdcDst);
 	HBITMAP memBitmap = ::CreateCompatibleBitmap(hdcDst, size.cx, size.cy);
 	::SelectObject(this->hdcSrc, memBitmap);
 
 	HRESULT hr = NULL;
-	// ��ʼ��Direct2D����Ҫ)����
+	// 初始化Direct2D（主要)工厂 
 	hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory);
 	HR(pD2DFactory->CreateDCRenderTarget(
 		&D2D1::RenderTargetProperties(
 			D2D1_RENDER_TARGET_TYPE_DEFAULT,
 			D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED)),
 		&pDCtarget));
-	// ��dc
-	this->pDCtarget->BindDC(this->hdcSrc, &clientRect);
-	// ��ʼ�� WIC ͼƬ����
+	// 绑定dc
+	this->pDCtarget->BindDC(this->hdcSrc, &this->rect);
+	// 初始化 WIC 图片工厂
 	HR(CoInitialize(NULL));
 	HR(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory)));
 
 }
 
-
-void FrameHandler::NextFrame()
+ID2D1Bitmap* FrameHandler::CreateBitmapFromFile(LPCWSTR fileName)
 {
+	HRESULT hr = S_OK;
+	//创建wic（位图）解码器  
+	IWICBitmapDecoder* pDecoder;
+	hr = pIWICFactory->CreateDecoderFromFilename(fileName, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &pDecoder);
+	// 解码后，获取图片第一帧
+	IWICBitmapFrameDecode* pFrame;
+	hr = pDecoder->GetFrame(0, &pFrame);
+
+
+	// 创建图片格式化转换器
+	IWICFormatConverter* pConverter;
+	hr = pIWICFactory->CreateFormatConverter(&pConverter);
+
+	hr = pConverter->Initialize(
+		pFrame,                          // 位图数据
+		GUID_WICPixelFormat32bppPBGRA,   // 转换的像素格式 
+		WICBitmapDitherTypeNone,         // Specified dither pattern  
+		NULL,                            // Specify a particular palette   
+		0.f,                             // Alpha threshold  
+		WICBitmapPaletteTypeCustom       // Palette translation type  
+	);
+	ID2D1Bitmap* pBitmap = NULL;
+	HR(pDCtarget->CreateBitmapFromWicBitmap(pConverter, nullptr, &pBitmap)); \
+		return pBitmap;
+}
+
+ID2D1Bitmap* FrameHandler::mapFrameToImage(SpriteFrame* frame)
+{
+	if (frameImageStorge[frame->id] == NULL) {
+		frameImageStorge[frame->id] = CreateBitmapFromFile(frame->imageFilePath);
+	}
+	return frameImageStorge[frame->id];
+}
+
+void FrameHandler::NextFrame(SpriteFrame* frame)
+{
+	// 绘制帧相同，无需重绘
+	if (this->currentFrameId == frame->id) {
+		return;
+	}
+	pDCtarget->BeginDraw();
+	pDCtarget->Clear();
+	pDCtarget->DrawBitmap(mapFrameToImage(frame), this->d2d1Rect);
+	pDCtarget->EndDraw();
+	this->currentFrameId = frame->id;
+
 	POINT ptSrc = { 0 };
 	BLENDFUNCTION bf;
 	bf.AlphaFormat = AC_SRC_ALPHA;
@@ -88,14 +136,14 @@ string SpriteFrame::CeateFrameId()
 	GUID guid;
 	if (S_OK == ::CoCreateGuid(&guid))
 	{
-		_snprintf(buf, sizeof(buf)
-			, "{%08X-%04X-%04x-%02X%02X-%02X%02X%02X%02X%02X%02X}"
-			, guid.Data1
-			, guid.Data2
-			, guid.Data3
-			, guid.Data4[0], guid.Data4[1]
-			, guid.Data4[2], guid.Data4[3], guid.Data4[4], guid.Data4[5]
-			, guid.Data4[6], guid.Data4[7]
+		snprintf(buf, sizeof(buf)
+						 , "{%08X-%04X-%04x-%02X%02X-%02X%02X%02X%02X%02X%02X}"
+						 , guid.Data1
+						 , guid.Data2
+						 , guid.Data3
+						 , guid.Data4[0], guid.Data4[1]
+						 , guid.Data4[2], guid.Data4[3], guid.Data4[4], guid.Data4[5]
+						 , guid.Data4[6], guid.Data4[7]
 		);
 	}
 	return buf;

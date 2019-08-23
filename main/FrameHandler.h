@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <Windows.h>
 #include <d2d1.h>
 #include <d2d1helper.h>
@@ -12,43 +12,44 @@
 #pragma comment(lib, "windowscodecs.lib")
 using namespace std;
 
+
+
+
+
 class SpriteFrame {
-	const string id;
-public:
 	static string CeateFrameId();
-
-	string GetFrameId() {
-		return id;
-	}
-
-	SpriteFrame() :id(SpriteFrame::CeateFrameId()) {
-	}
+public:
+	const string id;
+	LPCWSTR imageFilePath;
+	SpriteFrame(LPCWSTR imagePath);
 };
 
 class FrameHandler {
 private:
+	string currentFrameId;
 	HDC hdcSrc = NULL;
 	HDC hdcDst = NULL;
-	RECT clientRect;
+	RECT rect;
+	D2D1_RECT_F d2d1Rect;
 	SIZE size;
 	HWND window;
-	// D2D ¹¤³§
+	// D2D å·¥å‚
 	ID2D1Factory* pD2DFactory;
-	// WICÎ»Í¼¹¤³§
+	// WICä½å›¾å·¥å‚
 	IWICImagingFactory* pIWICFactory;
-	// Hwnd¾ä±ú ³ÊÏÖÆ÷
+	// Hwndå¥æŸ„ å‘ˆç°å™¨
 	ID2D1HwndRenderTarget* pHWNDtarget;
-	// DC¾ä±ú
+	// DCå¥æŸ„
 	ID2D1DCRenderTarget* pDCtarget;
-	// ¿â´æÖ¡£¨Ö÷ÒªÓÃÓÚ»º´æ»æÖÆ¹ıµÄÖ¡£¬ÔÙ»æÖÆÊ±ÎŞĞèÖØĞÂ´´½¨)
-	map<string, SpriteFrame> frameStorge;
-
+	// åº“å­˜å¸§ï¼ˆä¸»è¦ç”¨äºç¼“å­˜ç»˜åˆ¶è¿‡çš„å¸§ï¼Œå†ç»˜åˆ¶æ—¶æ— éœ€é‡æ–°åˆ›å»º)
+	// key:frameId
+	map<string, ID2D1Bitmap*> frameImageStorge;
+	ID2D1Bitmap* CreateBitmapFromFile(LPCWSTR fileName);
+	ID2D1Bitmap* mapFrameToImage(SpriteFrame* frame);
 public:
 	FrameHandler();
 	void SetWindowHand(HWND, SIZE);
-	// ´´½¨Î»Í¼
-	ID2D1Bitmap* CreateBitmapFromFile(LPCWSTR fileName);
-	void NextFrame();
-
+	// åˆ›å»ºä½å›¾
+	void NextFrame(SpriteFrame* frame);
 
 };

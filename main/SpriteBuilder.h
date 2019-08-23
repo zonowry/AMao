@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #include <Windows.h>
 #include "SpriteInstance.h"
 
 
 
-// ¾«Áé¹¹ÔìÆ÷£¬³ÌĞò³õÊ¼»¯
+// ç²¾çµæ„é€ å™¨ï¼Œç¨‹åºåˆå§‹åŒ–
 class SpriteBuilder {
 private:
 

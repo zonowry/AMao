@@ -1,15 +1,16 @@
-#include "SpriteBuilder.h"
+Ôªø#include "SpriteBuilder.h"
 
 
 void SpriteBuilder::Configuration(HINSTANCE  hInstance)
 {
-	// TODO: ≈‰÷√Œƒº˛∂¡»°≈‰÷√£¨ƒø«∞–¥À¿
+	// TODO: ÈÖçÁΩÆÊñá‰ª∂ËØªÂèñÈÖçÁΩÆÔºåÁõÆÂâçÂÜôÊ≠ª
 	int width = 128, height = 128, x = 500, y = 500;
 	SpriteConfiguration config = {
 		SIZE{width,height},
 		POINT{x,y},
 		hInstance
 	};
+	// ËØªÂèñÁ≤æÁÅµÈÖçÁΩÆÊñá‰ª∂
 	SpriteInstance::GetInstance()->Ready(config);
 
 
@@ -30,12 +31,12 @@ void SpriteBuilder::Run()
 
 	SpriteInstance::GetInstance()->Start();
 
-	///// Õ–≈ÃÕº±Í >>>
-	//SpriteWindowTray trayIcon(wnd);
+	///// ÊâòÁõòÂõæÊ†á >>>
+	//TrayIcon trayIcon(wnd);
 	//trayIcon.AddNotifyIcon();
-	///// Õ–≈ÃÕº±Í <<<
+	///// ÊâòÁõòÂõæÊ†á <<<
 
-	//// œ‘ æ¥∞ÃÂ
+	//// ÊòæÁ§∫Á™ó‰Ωì
 	//ShowWindow(wnd, cmdShow);
 
 	//MSG msg = { 0 };
@@ -47,10 +48,10 @@ void SpriteBuilder::Run()
 	//		DispatchMessage(&msg);
 	//	}
 	//	mainWindow.RedrawWndFrame();
-	//	// ∏¸–¬¥∞ø⁄–≈œ¢
+	//	// Êõ¥Êñ∞Á™óÂè£‰ø°ÊÅØ
 	//	Sleep(DELAY_TIME);
 	//}
-	//// Õ–≈ÃÕº±Íœ˚ ß
+	//// ÊâòÁõòÂõæÊ†áÊ∂àÂ§±
 	//Shell_NotifyIcon(NIM_DELETE, mainWindow.trayIcon);
 	//return static_cast<int>(msg.wParam);
 }

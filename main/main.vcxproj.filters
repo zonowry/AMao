@@ -30,6 +30,9 @@
     <ClCompile Include="FrameHandler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="TaryIcon.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SpriteBuilder.h">
@@ -42,6 +45,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="FrameHandler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TrayIcon.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="resources.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
