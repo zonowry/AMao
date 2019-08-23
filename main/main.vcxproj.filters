@@ -24,12 +24,24 @@
     <ClCompile Include="SpriteInstance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="SpriteAnimation.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameHandler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SpriteBuilder.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SpriteInstance.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteAnimation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameHandler.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,33 +1,5 @@
 ﻿#include "SpriteInstance.h"
 
-FrameHandler::FrameHandler() :window(NULL), size({ 0 })
-{
-}
-
-void FrameHandler::SetWindowHand(HWND window, SIZE size)
-{
-	this->window = window;
-	this->size = size;
-	/// 初始化hdc  创建兼容dc >>>
-	RECT clientRect = { 0,0,size.cx,size.cy };
-	this->hdcDst = GetDC(this->window);
-	this->hdcSrc = CreateCompatibleDC(this->hdcDst);
-	HBITMAP memBitmap = ::CreateCompatibleBitmap(hdcDst, this->size.cx, this->size.cy);
-	::SelectObject(this->hdcSrc, memBitmap);
-}
-
-
-void FrameHandler::NextFrame()
-{
-	POINT ptSrc = { 0 };
-	BLENDFUNCTION bf;
-	bf.AlphaFormat = AC_SRC_ALPHA;
-	bf.BlendFlags = 0;
-	bf.BlendOp = AC_SRC_OVER;
-	bf.SourceConstantAlpha = 255;
-	::UpdateLayeredWindow(this->window, this->hdcDst, NULL, &this->size, this->hdcSrc, &ptSrc, NULL, &bf, ULW_ALPHA);
-}
-
 
 
 
@@ -106,15 +78,8 @@ void SpriteInstance::Ready(SpriteConfiguration config)
 
 void SpriteInstance::Start()
 {
-	ShowWindow(this->mainWindow, 0);
-
-
-	///// ����ͼ�� >>>
-	//SpriteWindowTray trayIcon(wnd);
-	//trayIcon.AddNotifyIcon();
-	///// ����ͼ�� <<<
-
-	// ��ʾ����
+	this->Show();
+	// TODO 托盘图标
 	MSG msg = { 0 };
 	while (msg.message != WM_QUIT)
 	{
@@ -123,12 +88,19 @@ void SpriteInstance::Start()
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
+		// 更新帧（重绘）
 		frameHand->NextFrame();
-		// ���´�����Ϣ
 		Sleep(30);
 	}
 	// ����ͼ����ʧ
 	// Shell_NotifyIcon(NIM_DELETE, mainWindow.trayIcon);
 
+}
 
+void SpriteInstance::Show()
+{
+	ShowWindow(this->mainWindow, 0);
+
+	//SpriteWindowTray trayIcon(wnd);
+	//trayIcon.AddNotifyIcon();
 }

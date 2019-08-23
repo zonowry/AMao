@@ -123,11 +123,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FrameHandler.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SpriteAnimation.cpp" />
     <ClCompile Include="SpriteBuilder.cpp" />
     <ClCompile Include="SpriteInstance.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FrameHandler.h" />
+    <ClInclude Include="SpriteAnimation.h" />
     <ClInclude Include="SpriteBuilder.h" />
     <ClInclude Include="SpriteInstance.h" />
   </ItemGroup>

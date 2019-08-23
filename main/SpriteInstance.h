@@ -1,23 +1,12 @@
 #pragma once
 #include <Windows.h>
+#include "FrameHandler.h"
+#include "SpriteAnimation.h"
 
 struct SpriteConfiguration {
 	SIZE size;
 	POINT position;
 	HINSTANCE hand;
-};
-
-class FrameHandler {
-private:
-	HDC hdcSrc = NULL;
-	HDC hdcDst = NULL;
-	SIZE size;
-	HWND window;
-
-public:
-	FrameHandler();
-	void SetWindowHand(HWND, SIZE);
-	void NextFrame();
 };
 
 
