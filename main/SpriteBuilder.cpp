@@ -28,31 +28,6 @@ SpriteBuilder::~SpriteBuilder()
 
 void SpriteBuilder::Run()
 {
-
 	SpriteInstance::GetInstance()->Start();
-
-	///// 托盘图标 >>>
-	//TrayIcon trayIcon(wnd);
-	//trayIcon.AddNotifyIcon();
-	///// 托盘图标 <<<
-
-	//// 显示窗体
-	//ShowWindow(wnd, cmdShow);
-
-	//MSG msg = { 0 };
-	//while (msg.message != WM_QUIT)
-	//{
-	//	if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
-	//	{
-	//		TranslateMessage(&msg);
-	//		DispatchMessage(&msg);
-	//	}
-	//	mainWindow.RedrawWndFrame();
-	//	// 更新窗口信息
-	//	Sleep(DELAY_TIME);
-	//}
-	//// 托盘图标消失
-	//Shell_NotifyIcon(NIM_DELETE, mainWindow.trayIcon);
-	//return static_cast<int>(msg.wParam);
 }
 

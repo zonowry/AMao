@@ -1,4 +1,6 @@
 ﻿#include "FrameHandler.h"
+
+
 struct ComException
 {
 	HRESULT result;
@@ -37,8 +39,9 @@ void HR(HRESULT const result)
 }
 
 
-SpriteFrame::SpriteFrame(LPCWSTR imagePath) :imageFilePath(imagePath), id(SpriteFrame::CeateFrameId())
-{
+
+SpriteFrame::SpriteFrame() :id(SpriteFrame::CeateFrameId()) {
+
 }
 
 FrameHandler::FrameHandler() : window(NULL), rect({ 0 }), size({ 0 })
@@ -73,22 +76,23 @@ void FrameHandler::SetWindowHand(HWND window, SIZE size)
 
 }
 
-ID2D1Bitmap* FrameHandler::CreateBitmapFromFile(LPCWSTR fileName)
+ID2D1Bitmap* FrameHandler::CreateBitmap(IStream* pStream1)
 {
 	HRESULT hr = S_OK;
 	//创建wic（位图）解码器  
 	IWICBitmapDecoder* pDecoder;
-	hr = pIWICFactory->CreateDecoderFromFilename(fileName, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &pDecoder);
+
+	pIWICFactory->CreateDecoderFromStream(pStream1, NULL, WICDecodeMetadataCacheOnLoad, &pDecoder);
 	// 解码后，获取图片第一帧
 	IWICBitmapFrameDecode* pFrame;
-	hr = pDecoder->GetFrame(0, &pFrame);
+	pDecoder->GetFrame(0, &pFrame);
 
 
 	// 创建图片格式化转换器
 	IWICFormatConverter* pConverter;
-	hr = pIWICFactory->CreateFormatConverter(&pConverter);
+	pIWICFactory->CreateFormatConverter(&pConverter);
 
-	hr = pConverter->Initialize(
+	pConverter->Initialize(
 		pFrame,                          // 位图数据
 		GUID_WICPixelFormat32bppPBGRA,   // 转换的像素格式 
 		WICBitmapDitherTypeNone,         // Specified dither pattern  
@@ -97,14 +101,14 @@ ID2D1Bitmap* FrameHandler::CreateBitmapFromFile(LPCWSTR fileName)
 		WICBitmapPaletteTypeCustom       // Palette translation type  
 	);
 	ID2D1Bitmap* pBitmap = NULL;
-	HR(pDCtarget->CreateBitmapFromWicBitmap(pConverter, nullptr, &pBitmap)); \
-		return pBitmap;
+	pDCtarget->CreateBitmapFromWicBitmap(pConverter, nullptr, &pBitmap);
+	return pBitmap;
 }
 
 ID2D1Bitmap* FrameHandler::mapFrameToImage(SpriteFrame* frame)
 {
 	if (frameImageStorge[frame->id] == NULL) {
-		frameImageStorge[frame->id] = CreateBitmapFromFile(frame->imageFilePath);
+		frameImageStorge[frame->id] = CreateBitmap(frame->ToStream());
 	}
 	return frameImageStorge[frame->id];
 }
@@ -147,4 +151,31 @@ string SpriteFrame::CeateFrameId()
 		);
 	}
 	return buf;
+}
+
+SpriteFrameResource::SpriteFrameResource(FrameResource resourceId) :resourceId(resourceId)
+{
+}
+
+IStream* SpriteFrameResource::ToStream()
+{
+	HRSRC hRes = ::FindResource(GetModuleHandle(NULL), MAKEINTRESOURCE(FRAME_TEST), L"PNG");
+	HGLOBAL  hMem = ::LoadResource(NULL, hRes);
+	IStream* pStream1 ;
+	HR(CreateStreamOnHGlobal(hMem, TRUE, &pStream1));
+	return pStream1;
+}
+
+SpriteFrameFile::SpriteFrameFile(string path) :filePath(path)
+{
+}
+
+IStream* SpriteFrameFile::ToStream()
+{
+	FILE* file;
+	fopen_s(&file, this->filePath.c_str(), "rb");
+	IStream* s;
+	fread_s(&s, 100, 0, 100, file);
+
+	return s;
 }
