@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FrameClass.cpp" />
     <ClCompile Include="FrameHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SpriteAnimation.cpp" />
@@ -131,6 +132,7 @@
     <ClCompile Include="TaryIcon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FrameClass.h" />
     <ClInclude Include="FrameHandler.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SpriteAnimation.h" />

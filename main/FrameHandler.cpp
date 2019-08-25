@@ -40,10 +40,6 @@ void HR(HRESULT const result)
 
 
 
-SpriteFrame::SpriteFrame() :id(SpriteFrame::CeateFrameId()) {
-
-}
-
 FrameHandler::FrameHandler() : window(NULL), rect({ 0 }), size({ 0 })
 {
 }
@@ -81,7 +77,6 @@ ID2D1Bitmap* FrameHandler::CreateBitmap(IStream* pStream1)
 	HRESULT hr = S_OK;
 	//创建wic（位图）解码器  
 	IWICBitmapDecoder* pDecoder;
-
 	pIWICFactory->CreateDecoderFromStream(pStream1, NULL, WICDecodeMetadataCacheOnLoad, &pDecoder);
 	// 解码后，获取图片第一帧
 	IWICBitmapFrameDecode* pFrame;
@@ -105,23 +100,19 @@ ID2D1Bitmap* FrameHandler::CreateBitmap(IStream* pStream1)
 	return pBitmap;
 }
 
-ID2D1Bitmap* FrameHandler::mapFrameToImage(SpriteFrame* frame)
-{
-	if (frameImageStorge[frame->id] == NULL) {
-		frameImageStorge[frame->id] = CreateBitmap(frame->ToStream());
-	}
-	return frameImageStorge[frame->id];
-}
-
 void FrameHandler::NextFrame(SpriteFrame* frame)
 {
 	// 绘制帧相同，无需重绘
 	if (this->currentFrameId == frame->id) {
 		return;
 	}
+	ID2D1Bitmap* img = mapFrameToImage(frame);
+	if (img == NULL) {
+		return;
+	}
 	pDCtarget->BeginDraw();
 	pDCtarget->Clear();
-	pDCtarget->DrawBitmap(mapFrameToImage(frame), this->d2d1Rect);
+	pDCtarget->DrawBitmap(img, this->d2d1Rect);
 	pDCtarget->EndDraw();
 	this->currentFrameId = frame->id;
 
@@ -134,48 +125,11 @@ void FrameHandler::NextFrame(SpriteFrame* frame)
 	::UpdateLayeredWindow(this->window, this->hdcDst, NULL, &this->size, this->hdcSrc, &ptSrc, NULL, &bf, ULW_ALPHA);
 }
 
-string SpriteFrame::CeateFrameId()
+ID2D1Bitmap* FrameHandler::mapFrameToImage(SpriteFrame* frame)
 {
-	static char buf[64] = { 0 };
-	GUID guid;
-	if (S_OK == ::CoCreateGuid(&guid))
-	{
-		snprintf(buf, sizeof(buf)
-						 , "{%08X-%04X-%04x-%02X%02X-%02X%02X%02X%02X%02X%02X}"
-						 , guid.Data1
-						 , guid.Data2
-						 , guid.Data3
-						 , guid.Data4[0], guid.Data4[1]
-						 , guid.Data4[2], guid.Data4[3], guid.Data4[4], guid.Data4[5]
-						 , guid.Data4[6], guid.Data4[7]
-		);
+	if (frameImageStorge[frame->id] == NULL) {
+		frame->SetWICFactory(this->pIWICFactory);
+		frameImageStorge[frame->id] = CreateBitmap(frame->ToStream());
 	}
-	return buf;
-}
-
-SpriteFrameResource::SpriteFrameResource(FrameResource resourceId) :resourceId(resourceId)
-{
-}
-
-IStream* SpriteFrameResource::ToStream()
-{
-	HRSRC hRes = ::FindResource(GetModuleHandle(NULL), MAKEINTRESOURCE(FRAME_TEST), L"PNG");
-	HGLOBAL  hMem = ::LoadResource(NULL, hRes);
-	IStream* pStream1 ;
-	HR(CreateStreamOnHGlobal(hMem, TRUE, &pStream1));
-	return pStream1;
-}
-
-SpriteFrameFile::SpriteFrameFile(string path) :filePath(path)
-{
-}
-
-IStream* SpriteFrameFile::ToStream()
-{
-	FILE* file;
-	fopen_s(&file, this->filePath.c_str(), "rb");
-	IStream* s;
-	fread_s(&s, 100, 0, 100, file);
-
-	return s;
+	return frameImageStorge[frame->id];
 }

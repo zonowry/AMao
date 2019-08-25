@@ -2,6 +2,7 @@
 // Microsoft Visual C++ 生成的包含文件。
 // 供 main.rc 使用
 //
+#define FRAME_SPRITE										L"PNG"
 #define FRAME_TEST                      102
 
 // Next default values for new objects

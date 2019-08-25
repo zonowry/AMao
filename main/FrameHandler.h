@@ -9,37 +9,8 @@
 #include <dxgi.h>
 #include <map>
 #include "resource.h"
-#pragma comment(lib, "d2d1.lib")
-#pragma comment(lib, "dwrite.lib")
-#pragma comment(lib, "windowscodecs.lib")
+#include "FrameClass.h"
 using namespace std;
-
-typedef int FrameResource;
-
-class SpriteFrame {
-	static string CeateFrameId();
-public:
-	SpriteFrame();
-	const string id;
-	virtual IStream* ToStream() = 0;
-};
-
-class SpriteFrameResource : public SpriteFrame {
-private:
-	const FrameResource resourceId;
-public:
-	SpriteFrameResource(FrameResource resourceId);
-	IStream* ToStream() override;
-};
-
-
-class SpriteFrameFile : public SpriteFrame {
-private:
-	const string filePath;
-public:
-	SpriteFrameFile(string path);
-	IStream* ToStream() override;
-};
 
 
 class FrameHandler {
@@ -67,7 +38,5 @@ private:
 public:
 	FrameHandler();
 	void SetWindowHand(HWND, SIZE);
-	// 创建位图
 	void NextFrame(SpriteFrame* frame);
-
 };

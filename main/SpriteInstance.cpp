@@ -4,7 +4,9 @@
 // 托盘弹出菜单
 HMENU ntiMenu;
 // 测试帧
-//SpriteFrame* testFrame = new SpriteFrameFile("frame/test.png");
+// 从文件中读取
+//SpriteFrame* testFrame = new SpriteFrameFile(L"frame/test.png");
+// 从资源中读取
 SpriteFrame* testFrame = new SpriteFrameResource(FRAME_TEST);
 
 void PopupNotifyMenu(HWND hwnd) {
