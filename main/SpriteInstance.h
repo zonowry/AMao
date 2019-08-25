@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <Windows.h>
+#include "resource.h"
 #include "FrameHandler.h"
 #include "SpriteAnimation.h"
 #include "TrayIcon.h"
@@ -35,6 +36,8 @@ private:
 
 	~SpriteInstance()
 	{
+		// 关闭托盘图标
+		Shell_NotifyIcon(NIM_DELETE, &(trayIcon->trayIcon));
 	}
 
 	static LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);

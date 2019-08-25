@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include <Windows.h>
 #include <d2d1.h>
 #include <d2d1helper.h>
@@ -7,22 +8,10 @@
 #include <iostream>
 #include <dxgi.h>
 #include <map>
-#pragma comment(lib, "d2d1.lib")
-#pragma comment(lib, "dwrite.lib")
-#pragma comment(lib, "windowscodecs.lib")
+#include "resource.h"
+#include "FrameClass.h"
 using namespace std;
 
-
-
-
-
-class SpriteFrame {
-	static string CeateFrameId();
-public:
-	const string id;
-	LPCWSTR imageFilePath;
-	SpriteFrame(LPCWSTR imagePath);
-};
 
 class FrameHandler {
 private:
@@ -44,12 +33,10 @@ private:
 	// 库存帧（主要用于缓存绘制过的帧，再绘制时无需重新创建)
 	// key:frameId
 	map<string, ID2D1Bitmap*> frameImageStorge;
-	ID2D1Bitmap* CreateBitmapFromFile(LPCWSTR fileName);
+	ID2D1Bitmap* CreateBitmap(IStream* pStream1);
 	ID2D1Bitmap* mapFrameToImage(SpriteFrame* frame);
 public:
 	FrameHandler();
 	void SetWindowHand(HWND, SIZE);
-	// 创建位图
 	void NextFrame(SpriteFrame* frame);
-
 };

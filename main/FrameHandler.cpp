@@ -1,4 +1,6 @@
 ﻿#include "FrameHandler.h"
+
+
 struct ComException
 {
 	HRESULT result;
@@ -37,9 +39,6 @@ void HR(HRESULT const result)
 }
 
 
-SpriteFrame::SpriteFrame(LPCWSTR imagePath) :imageFilePath(imagePath), id(SpriteFrame::CeateFrameId())
-{
-}
 
 FrameHandler::FrameHandler() : window(NULL), rect({ 0 }), size({ 0 })
 {
@@ -73,22 +72,22 @@ void FrameHandler::SetWindowHand(HWND window, SIZE size)
 
 }
 
-ID2D1Bitmap* FrameHandler::CreateBitmapFromFile(LPCWSTR fileName)
+ID2D1Bitmap* FrameHandler::CreateBitmap(IStream* pStream1)
 {
 	HRESULT hr = S_OK;
 	//创建wic（位图）解码器  
 	IWICBitmapDecoder* pDecoder;
-	hr = pIWICFactory->CreateDecoderFromFilename(fileName, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &pDecoder);
+	pIWICFactory->CreateDecoderFromStream(pStream1, NULL, WICDecodeMetadataCacheOnLoad, &pDecoder);
 	// 解码后，获取图片第一帧
 	IWICBitmapFrameDecode* pFrame;
-	hr = pDecoder->GetFrame(0, &pFrame);
+	pDecoder->GetFrame(0, &pFrame);
 
 
 	// 创建图片格式化转换器
 	IWICFormatConverter* pConverter;
-	hr = pIWICFactory->CreateFormatConverter(&pConverter);
+	pIWICFactory->CreateFormatConverter(&pConverter);
 
-	hr = pConverter->Initialize(
+	pConverter->Initialize(
 		pFrame,                          // 位图数据
 		GUID_WICPixelFormat32bppPBGRA,   // 转换的像素格式 
 		WICBitmapDitherTypeNone,         // Specified dither pattern  
@@ -97,16 +96,8 @@ ID2D1Bitmap* FrameHandler::CreateBitmapFromFile(LPCWSTR fileName)
 		WICBitmapPaletteTypeCustom       // Palette translation type  
 	);
 	ID2D1Bitmap* pBitmap = NULL;
-	HR(pDCtarget->CreateBitmapFromWicBitmap(pConverter, nullptr, &pBitmap)); \
-		return pBitmap;
-}
-
-ID2D1Bitmap* FrameHandler::mapFrameToImage(SpriteFrame* frame)
-{
-	if (frameImageStorge[frame->id] == NULL) {
-		frameImageStorge[frame->id] = CreateBitmapFromFile(frame->imageFilePath);
-	}
-	return frameImageStorge[frame->id];
+	pDCtarget->CreateBitmapFromWicBitmap(pConverter, nullptr, &pBitmap);
+	return pBitmap;
 }
 
 void FrameHandler::NextFrame(SpriteFrame* frame)
@@ -115,9 +106,13 @@ void FrameHandler::NextFrame(SpriteFrame* frame)
 	if (this->currentFrameId == frame->id) {
 		return;
 	}
+	ID2D1Bitmap* img = mapFrameToImage(frame);
+	if (img == NULL) {
+		return;
+	}
 	pDCtarget->BeginDraw();
 	pDCtarget->Clear();
-	pDCtarget->DrawBitmap(mapFrameToImage(frame), this->d2d1Rect);
+	pDCtarget->DrawBitmap(img, this->d2d1Rect);
 	pDCtarget->EndDraw();
 	this->currentFrameId = frame->id;
 
@@ -130,21 +125,11 @@ void FrameHandler::NextFrame(SpriteFrame* frame)
 	::UpdateLayeredWindow(this->window, this->hdcDst, NULL, &this->size, this->hdcSrc, &ptSrc, NULL, &bf, ULW_ALPHA);
 }
 
-string SpriteFrame::CeateFrameId()
+ID2D1Bitmap* FrameHandler::mapFrameToImage(SpriteFrame* frame)
 {
-	static char buf[64] = { 0 };
-	GUID guid;
-	if (S_OK == ::CoCreateGuid(&guid))
-	{
-		snprintf(buf, sizeof(buf)
-						 , "{%08X-%04X-%04x-%02X%02X-%02X%02X%02X%02X%02X%02X}"
-						 , guid.Data1
-						 , guid.Data2
-						 , guid.Data3
-						 , guid.Data4[0], guid.Data4[1]
-						 , guid.Data4[2], guid.Data4[3], guid.Data4[4], guid.Data4[5]
-						 , guid.Data4[6], guid.Data4[7]
-		);
+	if (frameImageStorge[frame->id] == NULL) {
+		frame->SetWICFactory(this->pIWICFactory);
+		frameImageStorge[frame->id] = CreateBitmap(frame->ToStream());
 	}
-	return buf;
+	return frameImageStorge[frame->id];
 }

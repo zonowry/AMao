@@ -1,52 +1,23 @@
 ﻿#include "SpriteInstance.h"
 
 
-
 // 托盘弹出菜单
 HMENU ntiMenu;
-SpriteFrame* frame = new SpriteFrame(L"frame/test.png");
+// 测试帧
+// 从文件中读取
+//SpriteFrame* testFrame = new SpriteFrameFile(L"frame/test.png");
+// 从资源中读取
+SpriteFrame* testFrame = new SpriteFrameResource(FRAME_TEST);
 
 void PopupNotifyMenu(HWND hwnd) {
+
+	// HRSRC hRsrc = ::FindResource(hInst, MAKEINTRESOURCE(FRAME_TEST), lpType);
 	POINT pt;
 	GetCursorPos(&pt);
 	// 激活窗口，以便响应事件，关闭弹出菜单
 	SetForegroundWindow(hwnd);
 	TrackPopupMenu(ntiMenu, TPM_RIGHTBUTTON, pt.x, pt.y, NULL, hwnd, NULL);
 }
-
-void SpriteInstance::DragStart(POINT clickPoint)
-{
-	lMouseButton = true;
-	// 优化针对鼠标事件捕获（独占） ,需要与ReleaseCapture()成对出现
-	SetCapture(this->mainWindow);
-	triggerPoint = clickPoint;
-}
-
-
-
-void SpriteInstance::DragIng()
-{
-	if (lMouseButton)
-	{
-
-		POINT cursor;
-		GetCursorPos(&cursor);
-		cursor.x -= this->triggerPoint.x;
-		cursor.y -= this->triggerPoint.y;
-
-
-		SetWindowPos(this->mainWindow, NULL, cursor.x, cursor.y, NULL, NULL, SWP_NOREDRAW | SWP_NOSIZE | SWP_NOZORDER);
-	}
-}
-
-void SpriteInstance::DragStop()
-{
-	//currentState = c
-	lMouseButton = false;
-	ReleaseCapture();
-}
-
-
 
 LRESULT SpriteInstance::MainWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -173,22 +144,50 @@ void SpriteInstance::Start()
 		}
 		// TODO: 通过行为树获取frame帧
 		//SpriteFrame* frame = xxx;
-
 		// 更新帧（重绘）
-		frameHand->NextFrame(frame);
+		frameHand->NextFrame(testFrame);
 
-		// 动态调节性能
+		// TODO: 动态调节性能
 		if (!lMouseButton) {
 			Sleep(MAIN_PROGRESS_DELAY);
 		}
 	}
-	// 关闭托盘图标
-	Shell_NotifyIcon(NIM_DELETE, &(trayIcon->trayIcon));
-
 }
 
 void SpriteInstance::Show()
 {
 	ShowWindow(this->mainWindow, 10);
+}
 
+
+void SpriteInstance::DragStart(POINT clickPoint)
+{
+	lMouseButton = true;
+	// 优化针对鼠标事件捕获（独占） ,需要与ReleaseCapture()成对出现
+	SetCapture(this->mainWindow);
+	triggerPoint = clickPoint;
+}
+
+
+
+void SpriteInstance::DragIng()
+{
+	if (lMouseButton)
+	{
+
+		POINT cursor;
+		GetCursorPos(&cursor);
+		cursor.x -= this->triggerPoint.x;
+		cursor.y -= this->triggerPoint.y;
+
+
+		SetWindowPos(this->mainWindow, NULL, cursor.x, cursor.y, NULL, NULL, SWP_NOREDRAW | SWP_NOSIZE | SWP_NOZORDER);
+	}
+}
+
+void SpriteInstance::DragStop()
+{
+	//currentState = c
+	lMouseButton = false;
+	ReleaseCapture();
 }
