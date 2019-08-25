@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include "resource.h"
 
 // Õ–≈ÃÕº±Í
 #define AMAOMSG_NOTIFYICON 0x00101
@@ -15,7 +16,7 @@ class TrayIcon
 private:
 public:
 	NOTIFYICONDATA trayIcon;
-	TrayIcon(HWND wnd);
+	TrayIcon(HWND wnd, HICON);
 
 	void AddNotifyIcon();
 };

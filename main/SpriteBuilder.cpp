@@ -13,7 +13,6 @@ void SpriteBuilder::Configuration(HINSTANCE  hInstance)
 	// 读取精灵配置文件
 	SpriteInstance::GetInstance()->Ready(config);
 
-
 }
 
 

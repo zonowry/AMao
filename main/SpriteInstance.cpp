@@ -7,7 +7,7 @@ HMENU ntiMenu;
 // 从文件中读取
 //SpriteFrame* testFrame = new SpriteFrameFile(L"frame/test.png");
 // 从资源中读取
-SpriteFrame* testFrame = new SpriteFrameResource(FRAME_TEST);
+SpriteFrame* testFrame = new SpriteFrameResource(FRAME_TEST2);
 
 void PopupNotifyMenu(HWND hwnd) {
 
@@ -126,8 +126,10 @@ void SpriteInstance::Ready(SpriteConfiguration config)
 	this->GenerateWindowHand();
 	this->frameHand = new FrameHandler();
 	this->frameHand->SetWindowHand(this->mainWindow, this->configuration.size);
-	this->trayIcon = new TrayIcon(mainWindow);
+	HICON ntfIcon = ::LoadIcon(this->configuration.hand, MAKEINTRESOURCE(ICON_APP));
+	this->trayIcon = new TrayIcon(mainWindow,ntfIcon);
 	this->trayIcon->AddNotifyIcon();
+
 }
 
 void SpriteInstance::Start()

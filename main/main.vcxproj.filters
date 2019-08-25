@@ -30,10 +30,10 @@
     <ClCompile Include="FrameHandler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="TaryIcon.cpp">
+    <ClCompile Include="FrameClass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="FrameClass.cpp">
+    <ClCompile Include="TrayIcon.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -67,6 +67,12 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="frame\test.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="frame\test2.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="icon.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

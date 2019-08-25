@@ -5,7 +5,7 @@
 #include <fstream>
 #include <wincodec.h>
 
-
+#define FRAME_SPRITE L"PNG"
 using namespace std;
 
 class SpriteFrame {

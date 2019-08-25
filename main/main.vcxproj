@@ -129,7 +129,7 @@
     <ClCompile Include="SpriteAnimation.cpp" />
     <ClCompile Include="SpriteBuilder.cpp" />
     <ClCompile Include="SpriteInstance.cpp" />
-    <ClCompile Include="TaryIcon.cpp" />
+    <ClCompile Include="TrayIcon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FrameClass.h" />
@@ -145,6 +145,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="frame\test.png" />
+    <Image Include="frame\test2.png" />
+    <Image Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

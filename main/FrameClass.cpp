@@ -38,7 +38,7 @@ SpriteFrameResource::SpriteFrameResource(UINT resourceId) :resourceId(resourceId
 IStream* SpriteFrameResource::ToStream()
 {
 	// 获取资源
-	HRSRC hPic = ::FindResource(NULL, MAKEINTRESOURCE(FRAME_TEST), FRAME_SPRITE);
+	HRSRC hPic = ::FindResource(NULL, MAKEINTRESOURCE(this->resourceId), FRAME_SPRITE);
 	HANDLE hResData = NULL;
 	if (!hPic || !(hResData = LoadResource(NULL, hPic)))
 	{
@@ -64,22 +64,6 @@ SpriteFrameFile::SpriteFrameFile(LPCWSTR path) : filePath(path)
 {
 }
 
-
-//IStream* SpriteFrameFile::ToStream()
-//{
-//	// 1. 打开图片文件
-//	ifstream is(this->filePath, ifstream::in);
-//	// 2. 计算图片长度
-//	is.seekg(0, is.end);
-//	int length = is.tellg();
-//	is.seekg(0, is.beg);
-//	// 3. 创建内存缓存区
-//	IStream* buffer = new IStream ();
-//	// 4. 读取图片
-//	is.read(buffer, length);
-//	// 到此，图片已经成功的被读取到内存（buffer）中
-//	return  (IStream * )buffer;
-//}
 IStream* SpriteFrameFile::ToStream()
 {
 	IWICStream* pStream = NULL;
