@@ -4,6 +4,7 @@
 #include "FrameHandler.h"
 #include "SpriteAnimation.h"
 #include "TrayIcon.h"
+#include "SpriteBehavior.h"
 
 struct SpriteConfiguration {
 	SIZE size;
@@ -19,17 +20,17 @@ class SpriteInstance
 {
 private:
 	TrayIcon* trayIcon;
-	// 拖拽处理 >>>
-	bool lMouseButton;
+	/// 拖拽处理 >>>
+	bool leftMouseButton;
 	// 鼠标点击时的坐标点
 	POINT	triggerPoint;
-	// 拖拽处理 <<<
+	/// 拖拽处理 <<<
 	const int MAIN_PROGRESS_DELAY = 30;
 	const LPCWSTR MAIN_WINDOW_CLASSNAME = L"AMao_Main";
 	SpriteConfiguration configuration = { 0 };
 	HWND mainWindow = NULL;
 	FrameHandler* frameHand = NULL;
-
+	SpriteBehavior behavior;
 	SpriteInstance()
 	{
 	}
@@ -39,7 +40,7 @@ private:
 		// 关闭托盘图标
 		Shell_NotifyIcon(NIM_DELETE, &(trayIcon->trayIcon));
 	}
-
+	void Running();
 	static LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 	void GenerateWindowHand();
 

@@ -127,7 +127,7 @@ void SpriteInstance::Ready(SpriteConfiguration config)
 	this->frameHand = new FrameHandler();
 	this->frameHand->SetWindowHand(this->mainWindow, this->configuration.size);
 	HICON ntfIcon = ::LoadIcon(this->configuration.hand, MAKEINTRESOURCE(ICON_APP));
-	this->trayIcon = new TrayIcon(mainWindow,ntfIcon);
+	this->trayIcon = new TrayIcon(mainWindow, ntfIcon);
 	this->trayIcon->AddNotifyIcon();
 
 }
@@ -135,7 +135,11 @@ void SpriteInstance::Ready(SpriteConfiguration config)
 void SpriteInstance::Start()
 {
 	this->Show();
-	// TODO 托盘图标
+	this->Running();
+}
+
+void SpriteInstance::Running() {
+
 	MSG msg = { 0 };
 	while (msg.message != WM_QUIT)
 	{
@@ -145,12 +149,12 @@ void SpriteInstance::Start()
 			DispatchMessage(&msg);
 		}
 		// TODO: 通过行为树获取frame帧
-		//SpriteFrame* frame = xxx;
+		SpriteFrame* frame = this->behavior.Excute();
 		// 更新帧（重绘）
 		frameHand->NextFrame(testFrame);
 
 		// TODO: 动态调节性能
-		if (!lMouseButton) {
+		if (!leftMouseButton) {
 			Sleep(MAIN_PROGRESS_DELAY);
 		}
 	}
@@ -164,7 +168,7 @@ void SpriteInstance::Show()
 
 void SpriteInstance::DragStart(POINT clickPoint)
 {
-	lMouseButton = true;
+	leftMouseButton = true;
 	// 优化针对鼠标事件捕获（独占） ,需要与ReleaseCapture()成对出现
 	SetCapture(this->mainWindow);
 	triggerPoint = clickPoint;
@@ -174,15 +178,13 @@ void SpriteInstance::DragStart(POINT clickPoint)
 
 void SpriteInstance::DragIng()
 {
-	if (lMouseButton)
+	if (leftMouseButton)
 	{
 
 		POINT cursor;
 		GetCursorPos(&cursor);
 		cursor.x -= this->triggerPoint.x;
 		cursor.y -= this->triggerPoint.y;
-
-
 		SetWindowPos(this->mainWindow, NULL, cursor.x, cursor.y, NULL, NULL, SWP_NOREDRAW | SWP_NOSIZE | SWP_NOZORDER);
 	}
 }
@@ -190,6 +192,6 @@ void SpriteInstance::DragIng()
 void SpriteInstance::DragStop()
 {
 	//currentState = c
-	lMouseButton = false;
+	leftMouseButton = false;
 	ReleaseCapture();
 }

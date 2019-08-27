@@ -127,6 +127,7 @@
     <ClCompile Include="FrameHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SpriteAnimation.cpp" />
+    <ClCompile Include="SpriteBehavior.cpp" />
     <ClCompile Include="SpriteBuilder.cpp" />
     <ClCompile Include="SpriteInstance.cpp" />
     <ClCompile Include="TrayIcon.cpp" />
@@ -136,6 +137,7 @@
     <ClInclude Include="FrameHandler.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SpriteAnimation.h" />
+    <ClInclude Include="SpriteBehavior.h" />
     <ClInclude Include="SpriteBuilder.h" />
     <ClInclude Include="SpriteInstance.h" />
     <ClInclude Include="TrayIcon.h" />
