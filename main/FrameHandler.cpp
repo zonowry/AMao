@@ -42,6 +42,7 @@ void HR(HRESULT const result)
 
 FrameHandler::FrameHandler() : window(NULL), rect({ 0 }), size({ 0 })
 {
+
 }
 
 void FrameHandler::SetWindowHand(HWND window, SIZE size)
@@ -69,7 +70,6 @@ void FrameHandler::SetWindowHand(HWND window, SIZE size)
 	// 初始化 WIC 图片工厂
 	HR(CoInitialize(NULL));
 	HR(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pIWICFactory)));
-
 }
 
 ID2D1Bitmap* FrameHandler::CreateBitmap(IStream* pStream1)
