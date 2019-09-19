@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BehaviorTreeNode.cpp" />
     <ClCompile Include="FrameClass.cpp" />
     <ClCompile Include="FrameHandler.cpp" />
     <ClCompile Include="main.cpp" />
@@ -133,6 +134,7 @@
     <ClCompile Include="TrayIcon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BehaviorTreeNode.h" />
     <ClInclude Include="FrameClass.h" />
     <ClInclude Include="FrameHandler.h" />
     <ClInclude Include="resource.h" />

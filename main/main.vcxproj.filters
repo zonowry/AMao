@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="behavior">
+      <UniqueIdentifier>{b1343780-aece-4e1e-85f3-3d38696124e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -37,6 +40,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SpriteBehavior.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTreeNode.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -64,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="SpriteBehavior.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTreeNode.h">
+      <Filter>behavior</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
